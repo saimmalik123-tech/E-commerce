@@ -1,5 +1,5 @@
 // NAVBAR TOGGLE
-const bars = document.querySelector('.fa-bars, .fa-xmark');
+const bars = document.querySelector('.fa-bars') || document.querySelector('.fa-xmark');
 const searchDiv = document.querySelector('.SearchDiv');
 
 if (bars) {
@@ -15,14 +15,12 @@ if (bars) {
     });
 }
 
-// UPDATE CART BADGE COUNT
 function updateCartBadge() {
     const cartBadge = document.querySelector('.cart-badge');
     const count = Number(localStorage.getItem('cartCount')) || 0;
     if (cartBadge) cartBadge.innerText = count;
 }
 
-// UPDATE CART SUMMARY SECTION
 function updateCartSummary() {
     const totalItems = Number(localStorage.getItem('cartCount')) || 0;
     const totalPrice = Number(localStorage.getItem('cartTotal')) || 0;
@@ -36,7 +34,6 @@ function updateCartSummary() {
     if (cartBadge) cartBadge.innerText = totalItems;
 }
 
-// SAVE TO STORAGE FUNCTION
 function saveCartToStorage(cartItems) {
     const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -49,7 +46,6 @@ function saveCartToStorage(cartItems) {
     updateCartSummary();
 }
 
-// LOAD PRODUCTS ON HOMEPAGE
 async function loopingProduct() {
     const container = document.querySelector('.product-container');
     if (!container) return;
@@ -120,12 +116,10 @@ async function productPage() {
 
         addToCart(product);
 
-        // BUY NOW BUTTON
         const buyBtn = document.querySelector('.btn-buy');
         if (buyBtn) {
             buyBtn.addEventListener('click', () => {
                 alert("🔔 Buy Now functionality coming soon!");
-                // window.location.href = "./cart.html"; // optional
             });
         }
     } catch (error) {
@@ -162,6 +156,7 @@ function addToCart(product) {
     });
 }
 
+// DISPLAY CART PRODUCTS
 function displayCartProducts() {
     const productDetail = document.querySelector('.product-detail');
     if (!productDetail) return;
@@ -193,7 +188,6 @@ function displayCartProducts() {
         productDetail.appendChild(productCard);
     });
 
-    // DELETE BUTTON FUNCTIONALITY
     const deleteButtons = productDetail.querySelectorAll('.delete-btn');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -203,6 +197,7 @@ function displayCartProducts() {
     });
 }
 
+// DELETE FROM CART
 function deleteFromCart(productId) {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems = cartItems.filter(item => item.id !== productId);
@@ -211,7 +206,9 @@ function deleteFromCart(productId) {
 }
 
 function searchFilter() {
-    const searchInput = document.querySelector('.searcch');
+    const searchInput = document.querySelector('.search');
+    if (!searchInput) return;
+
     const value = searchInput.value.trim().toLowerCase();
     const cards = document.querySelectorAll('.product-container .card');
 
@@ -219,6 +216,41 @@ function searchFilter() {
         const title = card.querySelector('.title').innerText.toLowerCase();
         card.style.display = title.includes(value) ? 'block' : 'none';
     });
+}
+
+const select = document.querySelector('.category');
+select.addEventListener('change', filterProducts)
+async function filterProducts() {
+    let selectVal = select.value;
+    console.log(selectVal);
+
+    let container = document.querySelector('.product-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch(`https://fakestoreapi.com/products/category/${selectVal}`);
+        const products = await res.json();
+
+        container.innerHTML = '';
+        products.forEach(item => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <a href="./Code/product.html?id=${item.id}">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="card-content">
+                        <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
+                        <p class="price">$${item.price.toFixed(2)}</p>
+                        <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
+                    </div>
+                </a>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        container.innerHTML = '<p>⚠️ Failed to load products.</p>';
+        console.error(error);
+    }
 }
 
 updateCartBadge();
