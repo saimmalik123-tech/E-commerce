@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce</title>
+    <link rel="stylesheet" href="./Code/Style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+        integrity="sha512-DxV+EoADOkOygM4IR9yXP8Sb2qwgidEmeqAEmDKIOfPRQZOWbXCzLC6vjbZyy0vPisbH2SyW27+ddLVCN+OMzQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="heading">
+                <h1><a href="#">E-commerce</a></h1>
+                <i class="fa-solid fa-bars bars"></i>
+            </div>
+            <div class="SearchDiv">
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li>
+                        <a href="./Code/card.html" class="cart-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <p class="cart-badge">0</p>
+                        </a>
+                    </li>
+                </ul>
+                <div class="searchBar">
+                    <input type="text" class="searcch" oninput="searchFilter()" placeholder="Search products...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <select id="category">
+                    <option value="men's clothing">Men's Clothing</option>
+                    <option value="jewelery">Jewelery</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="women's clothing">Women's Clothing</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Style</h1>
+            <p>Find the best products curated just for you. Shop from men’s, women’s clothing, electronics, and more!
+            </p>
+            <a href="#products" class="btn-primary">Shop Now</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+                alt="Fashion Shopping">
+        </div>
+    </section>
+
+    <section class="categories">
+        <h2 class="section-title">Featured Categories</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <i class="fa-solid fa-shirt"></i>
+                <h3>Clothing</h3>
+                <p>Trendy outfits for every season</p>
+            </div>
+            <div class="category-card">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <h3>Electronics</h3>
+                <p>Latest gadgets & accessories</p>
+            </div>
+            <div class="category-card">
+                <i class="fa-solid fa-couch"></i>
+                <h3>Home & Living</h3>
+                <p>Modern decor and furniture</p>
+            </div>
+            <div class="category-card">
+                <i class="fa-solid fa-gem"></i>
+                <h3>Accessories</h3>
+                <p>Stylish add-ons to upgrade your look</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="products">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="product-container"></div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <h2>Contact Us</h2>
+            <p>We’d love to hear from you! Please fill out the form below and we’ll get back to you shortly.</p>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" placeholder="Enter your name" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required />
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="Subject" />
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" rows="5" placeholder="Your message..." required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>E-commerce</h3>
+                <p>Your one-stop shop for all your fashion, electronics, and lifestyle needs.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>Email: support@ecommerce.com</p>
+                <p>Phone: +1 (123) 456-7890</p>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 E-commerce. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
+
+
+    <script src="./Code/script.js"></script>
+</body>
+
+</html>
