@@ -1,16 +1,11 @@
 // NAVBAR TOGGLE
-const bars = document.querySelector('.fa-bars') || document.querySelector('.fa-xmark');
+const bars = document.querySelector('.fa-bars, .fa-xmark');
 const searchDiv = document.querySelector('.SearchDiv');
 
-if (bars) {
+if (bars && searchDiv) {
     bars.addEventListener('click', () => {
-        if (bars.classList.contains('fa-bars')) {
-            bars.classList.remove('fa-bars');
-            bars.classList.add('fa-xmark');
-        } else {
-            bars.classList.remove('fa-xmark');
-            bars.classList.add('fa-bars');
-        }
+        bars.classList.toggle('fa-bars');
+        bars.classList.toggle('fa-xmark');
         searchDiv.classList.toggle('active');
     });
 }
@@ -128,13 +123,19 @@ async function productPage() {
     }
 }
 
-// ADD TO CART
+// ADD TO CART FUNCTION
 function addToCart(product) {
     const cartBtn = document.querySelector('.btn-cart');
     if (!cartBtn) return;
 
-    cartBtn.addEventListener('click', () => {
-        const qty = Math.max(1, Number(document.getElementById('qty').value));
+    // Remove previous click listeners if any to prevent duplicates
+    const newCartBtn = cartBtn.cloneNode(true);
+    cartBtn.parentNode.replaceChild(newCartBtn, cartBtn);
+
+    newCartBtn.addEventListener('click', () => {
+        const qtyInput = document.getElementById('qty');
+        const qty = qtyInput ? Math.max(1, Number(qtyInput.value)) : 1;
+
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         const index = cartItems.findIndex(item => item.id === product.id);
 
@@ -156,7 +157,7 @@ function addToCart(product) {
     });
 }
 
-// DISPLAY CART PRODUCTS
+// DISPLAY CART PRODUCTS PAGE
 function displayCartProducts() {
     const productDetail = document.querySelector('.product-detail');
     if (!productDetail) return;
@@ -197,7 +198,7 @@ function displayCartProducts() {
     });
 }
 
-// DELETE FROM CART
+// DELETE PRODUCT FROM CART
 function deleteFromCart(productId) {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems = cartItems.filter(item => item.id !== productId);
@@ -205,6 +206,7 @@ function deleteFromCart(productId) {
     displayCartProducts();
 }
 
+// SEARCH FILTER FUNCTION
 function searchFilter() {
     const searchInput = document.querySelector('.search');
     if (!searchInput) return;
@@ -213,18 +215,23 @@ function searchFilter() {
     const cards = document.querySelectorAll('.product-container .card');
 
     cards.forEach(card => {
-        const title = card.querySelector('.title').innerText.toLowerCase();
+        const titleElem = card.querySelector('.title');
+        const title = titleElem ? titleElem.innerText.toLowerCase() : '';
         card.style.display = title.includes(value) ? 'block' : 'none';
     });
 }
 
-const select = document.querySelector('.category');
-select.addEventListener('change', filterProducts)
-async function filterProducts() {
-    let selectVal = select.value;
-    console.log(selectVal);
+const searchInput = document.querySelector('.search');
+if (searchInput) {
+    searchInput.addEventListener('input', searchFilter);
+}
 
-    let container = document.querySelector('.product-container');
+async function filterProducts() {
+    const select = document.querySelector('.category');
+    if (!select) return;
+
+    const selectVal = select.value;
+    const container = document.querySelector('.product-container');
     if (!container) return;
 
     try {
@@ -235,6 +242,8 @@ async function filterProducts() {
         products.forEach(item => {
             const card = document.createElement('div');
             card.classList.add('card');
+
+
             card.innerHTML = `
                 <a href="./Code/product.html?id=${item.id}">
                     <img src="${item.image}" alt="${item.title}">
@@ -253,6 +262,12 @@ async function filterProducts() {
     }
 }
 
+const select = document.querySelector('.category');
+if (select) {
+    select.addEventListener('change', filterProducts);
+}
+
+// INITIAL CALLS
 updateCartBadge();
 updateCartSummary();
 loopingProduct();
