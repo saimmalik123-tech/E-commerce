@@ -177,6 +177,8 @@ nav {
     align-items: center;
     justify-content: space-between;
     padding: 60px 20px;
+    width: 85%;
+    margin: 50px auto;
     gap: 40px;
     background-color: var(--secondary-bg);
     flex-wrap: wrap;
