@@ -1,4 +1,5 @@
-const bars = document.querySelector('.fa-bars') || document.querySelector('.fa-xmark');
+// NAVBAR TOGGLE
+const bars = document.querySelector('.fa-bars');
 const searchDiv = document.querySelector('.SearchDiv');
 
 if (bars && searchDiv) {
@@ -9,25 +10,28 @@ if (bars && searchDiv) {
     });
 }
 
+// Update cart badge count
 function updateCartBadge() {
     const cartBadge = document.querySelector('.cart-badge');
     const count = Number(localStorage.getItem('cartCount')) || 0;
     if (cartBadge) cartBadge.innerText = count;
 }
 
+// Update cart summary display (total items and price)
 function updateCartSummary() {
     const totalItems = Number(localStorage.getItem('cartCount')) || 0;
     const totalPrice = Number(localStorage.getItem('cartTotal')) || 0;
 
     const itemsElem = document.querySelector('#total-items');
     const priceElem = document.querySelector('#total-price');
+
     if (itemsElem) itemsElem.innerText = totalItems;
     if (priceElem) priceElem.innerText = `$${totalPrice.toFixed(2)}`;
 
-    const cartBadge = document.querySelector('.cart-badge');
-    if (cartBadge) cartBadge.innerText = totalItems;
+    updateCartBadge();
 }
 
+// Save cart items and update counts in localStorage and UI
 function saveCartToStorage(cartItems) {
     const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -36,10 +40,10 @@ function saveCartToStorage(cartItems) {
     localStorage.setItem('cartCount', totalCount);
     localStorage.setItem('cartTotal', totalPrice.toFixed(2));
 
-    updateCartBadge();
     updateCartSummary();
 }
 
+// Fetch and display all products
 async function loopingProduct() {
     const container = document.querySelector('.product-container');
     if (!container) return;
@@ -53,15 +57,15 @@ async function loopingProduct() {
             const card = document.createElement('div');
             card.classList.add('card');
             card.innerHTML = `
-                <a href="./Code/product.html?id=${item.id}">
-                    <img src="${item.image.replace(/\.jpg$/i, '.png')}" alt="${item.title}">
-                    <div class="card-content">
-                        <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
-                        <p class="price">$${item.price.toFixed(2)}</p>
-                        <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
-                    </div>
-                </a>
-            `;
+        <a href="./Code/product.html?id=${item.id}">
+          <img src="${item.image.replace(/\.jpg$/i, '.png')}" alt="${item.title}">
+          <div class="card-content">
+            <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
+            <p class="price">$${item.price.toFixed(2)}</p>
+            <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
+          </div>
+        </a>
+      `;
             container.appendChild(card);
         });
     } catch (error) {
@@ -70,6 +74,7 @@ async function loopingProduct() {
     }
 }
 
+// Show single product page
 async function productPage() {
     const wrapper = document.querySelector('.page-wrapper');
     if (!wrapper) return;
@@ -83,37 +88,35 @@ async function productPage() {
         const product = await res.json();
 
         wrapper.innerHTML = `
-            <div class="product-preview-section">
-                <div class="product-image-container">
-                    <img src="${product.image}" alt="${product.title}" />
-                </div>
-                <div class="product-info-container">
-                    <h1 class="product-name">${product.title}</h1>
-                    <p class="product-rating">⭐ ${product.rating.rate} (${product.rating.count})</p>
-                    <p class="product-price">$${product.price.toFixed(2)}</p>
+      <div class="product-preview-section">
+        <div class="product-image-container">
+          <img src="${product.image}" alt="${product.title}" />
+        </div>
+        <div class="product-info-container">
+          <h1 class="product-name">${product.title}</h1>
+          <p class="product-rating">⭐ ${product.rating.rate} (${product.rating.count})</p>
+          <p class="product-price">$${product.price.toFixed(2)}</p>
 
-                    <div class="quantity-select">
-                        <label for="qty">Quantity:</label>
-                        <input type="number" id="qty" min="1" value="1" />
-                    </div>
+          <div class="quantity-select">
+            <label for="qty">Quantity:</label>
+            <input type="number" id="qty" min="1" value="1" />
+          </div>
 
-                    <p class="product-description">${product.description}</p>
+          <p class="product-description">${product.description}</p>
 
-                    <div class="action-buttons">
-                        <button class="btn-cart">🛒 Add to Cart</button>
-                        <button class="btn-buy">⚡ Buy Now</button>
-                    </div>
-                </div>
-            </div>
-        `;
+          <div class="action-buttons">
+            <button class="btn-cart">🛒 Add to Cart</button>
+            <button class="btn-buy">⚡ Buy Now</button>
+          </div>
+        </div>
+      </div>
+    `;
 
         addToCart(product);
 
         const buyBtn = document.querySelector('.btn-buy');
         if (buyBtn) {
-            buyBtn.addEventListener('click', () => {
-                alert("🔔 Buy Now functionality coming soon!");
-            });
+            buyBtn.addEventListener('click', () => alert("🔔 Buy Now functionality coming soon!"));
         }
     } catch (error) {
         wrapper.innerHTML = `<p>⚠️ Failed to load product details.</p>`;
@@ -121,6 +124,7 @@ async function productPage() {
     }
 }
 
+// Add product to cart logic
 function addToCart(product) {
     const cartBtn = document.querySelector('.btn-cart');
     if (!cartBtn) return;
@@ -149,7 +153,8 @@ function addToCart(product) {
         }
 
         saveCartToStorage(cartItems);
-        alert("✅ Product added to cart!");
+        const modal = document.querySelector('.modal');
+        modal.classList.add('show');
     });
 }
 
@@ -169,23 +174,22 @@ function displayCartProducts() {
         const productCard = document.createElement('div');
         productCard.classList.add('product-card');
         productCard.innerHTML = `
-            <div class="product-image">
-                <img class="product-img" src="${item.image}" alt="${item.title}" />
-            </div>
-            <div class="product-info">
-                <h1 class="product-title">${item.title}</h1>
-                <p class="price">$${item.price.toFixed(2)}</p>
-                <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
-                <p class="quantity">Quantity: ${item.quantity}</p>
-                <p class="total">Total: $${(item.price * item.quantity).toFixed(2)}</p>
-                <button class="btn-primary delete-btn" data-id="${item.id}">Delete</button>
-            </div>
-        `;
+      <div class="product-image">
+        <img class="product-img" src="${item.image}" alt="${item.title}" />
+      </div>
+      <div class="product-info">
+        <h1 class="product-title">${item.title}</h1>
+        <p class="price">$${item.price.toFixed(2)}</p>
+        <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
+        <p class="quantity">Quantity: ${item.quantity}</p>
+        <p class="total">Total: $${(item.price * item.quantity).toFixed(2)}</p>
+        <button class="btn-primary delete-btn" data-id="${item.id}">Delete</button>
+      </div>
+    `;
         productDetail.appendChild(productCard);
     });
 
-    const deleteButtons = productDetail.querySelectorAll('.delete-btn');
-    deleteButtons.forEach(btn => {
+    productDetail.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = Number(btn.dataset.id);
             deleteFromCart(id);
@@ -217,15 +221,15 @@ async function filterProducts() {
             const card = document.createElement('div');
             card.classList.add('card');
             card.innerHTML = `
-                <a href="./Code/product.html?id=${item.id}">
-                    <img src="${item.image.replace(/\.jpg$/i, 't.png')}" alt="${item.title}">
-                    <div class="card-content">
-                        <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
-                        <p class="price">$${item.price.toFixed(2)}</p>
-                        <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
-                    </div>
-                </a>
-            `;
+        <a href="./Code/product.html?id=${item.id}">
+          <img src="${item.image.replace(/\.jpg$/i, 't.png')}" alt="${item.title}">
+          <div class="card-content">
+            <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
+            <p class="price">$${item.price.toFixed(2)}</p>
+            <p class="rating">⭐ ${item.rating.rate} (${item.rating.count})</p>
+          </div>
+        </a>
+      `;
             container.appendChild(card);
         });
     } catch (error) {
@@ -234,23 +238,11 @@ async function filterProducts() {
     }
 }
 
-const select = document.querySelector('.category');
-if (select) {
-    select.addEventListener('change', filterProducts);
-}
-
-const searchInput = document.querySelector('.search');
-if (searchInput) {
-    searchInput.addEventListener('input', searchFilter);
-}
-
 function searchFilter() {
     const search = document.querySelector('.search');
     if (!search) return;
 
-    let value = search.value.trim().toLowerCase();
-    console.log("Search value:", value);
-
+    const value = search.value.trim().toLowerCase();
     const cards = document.querySelectorAll('.product-container .card');
 
     cards.forEach(card => {
@@ -260,8 +252,17 @@ function searchFilter() {
     });
 }
 
-updateCartBadge();
-updateCartSummary();
-loopingProduct();
-productPage();
-displayCartProducts();
+
+const select = document.querySelector('.category');
+if (select) select.addEventListener('change', filterProducts);
+
+const searchInput = document.querySelector('.search');
+if (searchInput) searchInput.addEventListener('input', searchFilter);
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartBadge();
+    updateCartSummary();
+    loopingProduct();
+    productPage();
+    displayCartProducts();
+});
