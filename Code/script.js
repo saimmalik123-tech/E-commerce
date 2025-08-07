@@ -1,5 +1,4 @@
-// NAVBAR TOGGLE
-const bars = document.querySelector('.fa-bars, .fa-xmark');
+const bars = document.querySelector('.fa-bars') || document.querySelector('.fa-xmark');
 const searchDiv = document.querySelector('.SearchDiv');
 
 if (bars && searchDiv) {
@@ -55,7 +54,7 @@ async function loopingProduct() {
             card.classList.add('card');
             card.innerHTML = `
                 <a href="./Code/product.html?id=${item.id}">
-                    <img src="${item.image}" alt="${item.title}">
+                    <img src="${item.image.replace(/\.jpg$/i, '.png')}" alt="${item.title}">
                     <div class="card-content">
                         <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
                         <p class="price">$${item.price.toFixed(2)}</p>
@@ -71,7 +70,6 @@ async function loopingProduct() {
     }
 }
 
-// PRODUCT DETAIL PAGE
 async function productPage() {
     const wrapper = document.querySelector('.page-wrapper');
     if (!wrapper) return;
@@ -123,12 +121,10 @@ async function productPage() {
     }
 }
 
-// ADD TO CART FUNCTION
 function addToCart(product) {
     const cartBtn = document.querySelector('.btn-cart');
     if (!cartBtn) return;
 
-    // Remove previous click listeners if any to prevent duplicates
     const newCartBtn = cartBtn.cloneNode(true);
     cartBtn.parentNode.replaceChild(newCartBtn, cartBtn);
 
@@ -157,7 +153,6 @@ function addToCart(product) {
     });
 }
 
-// DISPLAY CART PRODUCTS PAGE
 function displayCartProducts() {
     const productDetail = document.querySelector('.product-detail');
     if (!productDetail) return;
@@ -198,32 +193,11 @@ function displayCartProducts() {
     });
 }
 
-// DELETE PRODUCT FROM CART
 function deleteFromCart(productId) {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems = cartItems.filter(item => item.id !== productId);
     saveCartToStorage(cartItems);
     displayCartProducts();
-}
-
-// SEARCH FILTER FUNCTION
-function searchFilter() {
-    const searchInput = document.querySelector('.search');
-    if (!searchInput) return;
-
-    const value = searchInput.value.trim().toLowerCase();
-    const cards = document.querySelectorAll('.product-container .card');
-
-    cards.forEach(card => {
-        const titleElem = card.querySelector('.title');
-        const title = titleElem ? titleElem.innerText.toLowerCase() : '';
-        card.style.display = title.includes(value) ? 'block' : 'none';
-    });
-}
-
-const searchInput = document.querySelector('.search');
-if (searchInput) {
-    searchInput.addEventListener('input', searchFilter);
 }
 
 async function filterProducts() {
@@ -242,11 +216,9 @@ async function filterProducts() {
         products.forEach(item => {
             const card = document.createElement('div');
             card.classList.add('card');
-
-
             card.innerHTML = `
                 <a href="./Code/product.html?id=${item.id}">
-                    <img src="${item.image}" alt="${item.title}">
+                    <img src="${item.image.replace(/\.jpg$/i, 't.png')}" alt="${item.title}">
                     <div class="card-content">
                         <h3 class="title">${item.title.length > 40 ? item.title.slice(0, 37) + '...' : item.title}</h3>
                         <p class="price">$${item.price.toFixed(2)}</p>
@@ -267,7 +239,27 @@ if (select) {
     select.addEventListener('change', filterProducts);
 }
 
-// INITIAL CALLS
+const searchInput = document.querySelector('.search');
+if (searchInput) {
+    searchInput.addEventListener('input', searchFilter);
+}
+
+function searchFilter() {
+    const search = document.querySelector('.search');
+    if (!search) return;
+
+    let value = search.value.trim().toLowerCase();
+    console.log("Search value:", value);
+
+    const cards = document.querySelectorAll('.product-container .card');
+
+    cards.forEach(card => {
+        const titleElem = card.querySelector('.title');
+        const title = titleElem ? titleElem.innerText.toLowerCase() : '';
+        card.style.display = title.includes(value) ? 'block' : 'none';
+    });
+}
+
 updateCartBadge();
 updateCartSummary();
 loopingProduct();
